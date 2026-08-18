@@ -9,8 +9,19 @@ const io = new Server(server, {
     maxHttpBufferSize: 1e8 // 100 MB buffer for base64 images
 });
 
-// Serve static files from the current directory
-app.use(express.static(path.join(__dirname)));
+// 1. Tell express.static to use 'dash.html' as the default index file instead of 'index.html'
+app.use(express.static(path.join(__dirname), { index: 'dash.html' }));
+
+// 2. (Optional but recommended) Explicitly route the root URL to dash.html 
+// to ensure it serves the dashboard if the user goes to the base URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dash.html'));
+});
+
+// 3. (Optional) Create a specific /dashboard route just in case
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dash.html'));
+});
 
 // Keep track of how many users are in each room
 // Format: { 'roomId': count }
